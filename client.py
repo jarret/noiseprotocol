@@ -7,9 +7,6 @@ from noise.connection import NoiseConnection, Keypair
 sock = socket.socket()
 sock.connect(('localhost', 2000))
 
-# Create instance of NoiseConnection, set up to use NN handshake pattern,
-# Curve25519 for elliptic curve keypair, ChaCha20Poly1305 as cipher function
-# and SHA256 for hashing.
 print("creating protocol")
 noise = NoiseConnection.from_name(b'Noise_XK_secp256k1_ChaChaPoly_SHA256')
 
@@ -35,12 +32,6 @@ print("start handshake")
 # Enter handshake mode
 noise.start_handshake()
 
-
-print("1 handshake finished: %s" % noise.handshake_finished)
-
-
-
-
 # Perform handshake. Break when finished
 for action in cycle(['send', 'receive']):
     print("\naction: %s" % action)
@@ -59,33 +50,7 @@ for action in cycle(['send', 'receive']):
         print("handshake plaintext: %s" % plaintext.hex())
 
 
-
-# Perform handshake - as we are the initiator, we need to generate first
-# message.  We don't provide any payload (although we could, but it would be
-# cleartext for this pattern).
-#print("write message from proto?")
-#message = noise.write_message()
-
-#print("2 handshake finished: %s" % noise.handshake_finished)
-# Send the message to the responder - you may simply use sockets or any other
-# way to exchange bytes between communicating parties. 
-#print("sendall message: %s" % message.hex())
-#sock.sendall(message)
-# Receive the message from the responder 
-#received = sock.recv(2048)
-#print("received: %s" % received.hex())
-# Feed the received message into noise
-#payload = noise.read_message(received)
-
-#print("3 handshake finished: %s" % noise.handshake_finished)
-
-#print("payload: %s" % payload)
-
-# As of now, the handshake should be finished (as we are using NN pattern). 
-# Any further calls to write_message or read_message would raise
-# NoiseHandshakeError exception.
-# We can use encrypt/decrypt methods of NoiseConnection now for encryption and
-# decryption of messages.
+# send and receive echo loop
 for payload in ["payload one", "payload two", "payload three"]:
     p = payload.encode("utf8")
     print("sending payload: %s" % p)
