@@ -11,7 +11,7 @@ sock.connect(('localhost', 2000))
 # Curve25519 for elliptic curve keypair, ChaCha20Poly1305 as cipher function
 # and SHA256 for hashing.
 print("creating protocol")
-noise = NoiseConnection.from_name(b'Noise_XK_25519_ChaChaPoly_SHA256')
+noise = NoiseConnection.from_name(b'Noise_XK_secp256k1_ChaChaPoly_SHA256')
 
 # Set role in this connection as initiator
 print("setting initiator")

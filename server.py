@@ -15,7 +15,7 @@ if __name__ == '__main__':
     print('Accepted connection from', addr)
 
     print("creating protocol")
-    noise = NoiseConnection.from_name(b'Noise_XK_25519_ChaChaPoly_SHA256')
+    noise = NoiseConnection.from_name(b'Noise_XK_secp256k1_ChaChaPoly_SHA256')
 
     our_static = bytes.fromhex(
         "2121212121212121212121212121212121212121212121212121212121212121")
