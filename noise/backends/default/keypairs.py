@@ -12,14 +12,21 @@ class KeyPair25519(KeyPair):
             raise NoiseValueError('Invalid length of private_bytes! Should be 32')
         private = x25519.X25519PrivateKey.from_private_bytes(private_bytes)
         public = private.public_key()
-        return cls(private=private, public=public, public_bytes=public.public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw))
+        public_bytes = public.public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw)
+        print("keypair private: %s" % private_bytes.hex())
+        print("keypair derived public_bytes: %s" % public_bytes.hex())
+        return cls(private=private, public=public, public_bytes=public_bytes)
 
     @classmethod
     def from_public_bytes(cls, public_bytes):
         if len(public_bytes) != 32:
             raise NoiseValueError('Invalid length of public_bytes! Should be 32')
         public = x25519.X25519PublicKey.from_public_bytes(public_bytes)
-        return cls(public=public, public_bytes=public.public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw))
+        pb = public_bytes=public.public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw)
+        print("keypair public_bytes: %s" % pb.hex())
+        return cls(public=public, public_bytes=pb)
 
 
 class KeyPair448(KeyPair):

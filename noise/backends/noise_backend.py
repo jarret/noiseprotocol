@@ -58,6 +58,7 @@ class NoiseBackend:
             if not func:
                 raise NoiseProtocolNameError('Unknown {} in Noise Protocol name, given {}, known {}'.format(
                                              method, looked_up_func, " ".join(map_dict)))
+            print("method: %s func: %s" % (method, func))
             mappings[method] = func
 
         return mappings

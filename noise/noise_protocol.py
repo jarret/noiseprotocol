@@ -15,7 +15,9 @@ class NoiseProtocol(object):
         self.name = protocol_name
         self.backend = backend
         unpacked_name = UnpackedName.from_protocol_name(self.name)
+        print("unpacked name: %s" % unpacked_name)
         mappings = self.backend.map_protocol_name_to_crypto(unpacked_name)
+        print("mappings: %s" % mappings)
 
         # A valid Pattern instance (see Section 7 of specification (rev 32))
         self.pattern = mappings['pattern']()
@@ -104,6 +106,11 @@ class UnpackedName:
         self.hash = hash
         self.keypair = keypair
         self.pattern_modifiers = pattern_modifiers
+
+    def __str__(self):
+        return "%s %s %s %s %s %s" % (self.pattern, self.dh, self.cipher,
+                                      self.hash, self.keypair,
+                                      self.pattern_modifiers)
 
     @classmethod
     def from_protocol_name(cls, name):
