@@ -5,6 +5,8 @@ from noise.backends.default.keypairs import KeyPair25519, KeyPair448, KeyPairSec
 from noise.exceptions import NoiseValueError
 from noise.functions.dh import DH
 
+import secp256k1
+
 
 class ED25519(DH):
     @property
@@ -60,13 +62,19 @@ class Secp256k1(DH):
         return 32
 
     def generate_keypair(self) -> 'KeyPair':
-        private_key = x25519.X25519PrivateKey.generate()
-        public_key = private_key.public_key()
+        private_key = secp256k1.PrivateKey()
+        public_key = private_key.pubkey
+        #private_key = x25519.X25519PrivateKey.generate()
+        #public_key = private_key.public_key()
         return KeyPair25519(private_key, public_key,
                             public_key.public_bytes(serialization.Encoding.Raw,
                                                     serialization.PublicFormat.Raw))
 
     def dh(self, private_key, public_key) -> bytes:
-        if not isinstance(private_key, x25519.X25519PrivateKey) or not isinstance(public_key, x25519.X25519PublicKey):
-            raise NoiseValueError('Invalid keys! Must be x25519.X25519PrivateKey and x25519.X25519PublicKey instances')
-        return private_key.exchange(public_key)
+        if not isinstance(private_key, secp256k1.PrivateKey) or not isinstance(public_key, secp256k1.PublicKey):
+            raise NoiseValueError('Invalid keys! Must be secp256k1.PrivateKey and secp256k1.PublicKey instances')
+        private_bytes = private_key.private_key
+        ss_bytes = public_key.ecdh(private_bytes)
+        print("ss_bytes: %s" % ss_bytes.hex())
+        return ss_bytes
+        #return private_key.exchange(public_key)

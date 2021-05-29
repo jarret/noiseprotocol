@@ -4,6 +4,8 @@ from cryptography.hazmat.primitives.asymmetric import x25519, x448
 from noise.exceptions import NoiseValueError
 from noise.functions.keypair import KeyPair
 
+import secp256k1
+
 
 class KeyPair25519(KeyPair):
     @classmethod
@@ -50,12 +52,12 @@ class KeyPairSecp256k1(KeyPair):
     @classmethod
     def from_private_bytes(cls, private_bytes):
         if len(private_bytes) != 32:
-            raise NoiseValueError('Invalid length of private_bytes! Should be 32')
-        private = x25519.X25519PrivateKey.from_private_bytes(private_bytes)
-        public = private.public_key()
-        public_bytes = public.public_bytes(
-            encoding=serialization.Encoding.Raw,
-            format=serialization.PublicFormat.Raw)
+            raise NoiseValueError('Invalid length of private_bytes! '
+                                  'Should be 32')
+        print("from private bytes")
+        private = secp256k1.PrivateKey(privkey=private_bytes)
+        public = private.pubkey
+        public_bytes = public.serialize()[1:]
         print("keypair private: %s" % private_bytes.hex())
         print("keypair derived public_bytes: %s" % public_bytes.hex())
         return cls(private=private, public=public, public_bytes=public_bytes)
@@ -63,8 +65,9 @@ class KeyPairSecp256k1(KeyPair):
     @classmethod
     def from_public_bytes(cls, public_bytes):
         if len(public_bytes) != 32:
-            raise NoiseValueError('Invalid length of public_bytes! Should be 32')
-        public = x25519.X25519PublicKey.from_public_bytes(public_bytes)
-        pb = public_bytes=public.public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw)
-        print("keypair public_bytes: %s" % pb.hex())
+            raise NoiseValueError('Invalid length of public_bytes! '
+                                  'Should be 32')
+        print("from public bytes")
+        public = secp256k1.PublicKey(pubkey=public_bytes, raw=True)
+        print("keypair public_bytes: %s" % public_bytes.hex())
         return cls(public=public, public_bytes=pb)
