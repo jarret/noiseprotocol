@@ -51,23 +51,31 @@ class KeyPair448(KeyPair):
 class KeyPairSecp256k1(KeyPair):
     @classmethod
     def from_private_bytes(cls, private_bytes):
+        print("private bytes: %s len: %d" % (private_bytes.hex(),
+                                             len(private_bytes)))
         if len(private_bytes) != 32:
             raise NoiseValueError('Invalid length of private_bytes! '
                                   'Should be 32')
         print("from private bytes")
         private = secp256k1.PrivateKey(privkey=private_bytes)
         public = private.pubkey
-        public_bytes = public.serialize()[1:]
-        print("keypair private: %s" % private_bytes.hex())
-        print("keypair derived public_bytes: %s" % public_bytes.hex())
-        return cls(private=private, public=public, public_bytes=public_bytes)
+        public_bytes = public.serialize()
+        print("sign_byte: %s" % public.serialize()[:1].hex())
+        print("keypair private: %s len: %d" % (private_bytes.hex(),
+                                               len(private_bytes)))
+        print("keypair derived public_bytes: %s len: %d" % (public_bytes.hex(),
+                                                            len(public_bytes)))
+        return cls(private=private, public=public, public_bytes=public.serialize())
 
     @classmethod
     def from_public_bytes(cls, public_bytes):
-        if len(public_bytes) != 32:
+        print("public bytes: %s len: %d" % (public_bytes.hex(),
+                                            len(public_bytes)))
+        if len(public_bytes) != 33:
             raise NoiseValueError('Invalid length of public_bytes! '
-                                  'Should be 32')
+                                  'Should be 33')
         print("from public bytes")
-        public = secp256k1.PublicKey(pubkey=public_bytes, raw=True)
-        print("keypair public_bytes: %s" % public_bytes.hex())
-        return cls(public=public, public_bytes=pb)
+        signed_bytes = public_bytes
+        public = secp256k1.PublicKey(pubkey=signed_bytes, raw=True)
+        print("keypair public_bytes: %s" % signed_bytes.hex())
+        return cls(public=public, public_bytes=signed_bytes)

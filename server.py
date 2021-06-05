@@ -17,18 +17,19 @@ if __name__ == '__main__':
     print("creating protocol")
     noise = NoiseConnection.from_name(b'Noise_XK_secp256k1_ChaChaPoly_SHA256')
 
+    print("\nour private:")
     our_static = bytes.fromhex(
         "2121212121212121212121212121212121212121212121212121212121212121")
-    print("our private")
     noise.set_keypair_from_private_bytes(Keypair.STATIC, our_static)
 
+    print("\nour ephemeral:")
     our_ephemeral = bytes.fromhex(
         "2222222222222222222222222222222222222222222222222222222222222222")
     noise.set_keypair_from_private_bytes(Keypair.EPHEMERAL, our_ephemeral)
 
+    print("\ntheir private:")
     their_static = bytes.fromhex(
         "1111111111111111111111111111111111111111111111111111111111111111")
-    print("their private")
     noise.set_keypair_from_private_bytes(Keypair.REMOTE_STATIC, their_static)
 
     print("setting responder")
@@ -49,7 +50,7 @@ if __name__ == '__main__':
             print("done sending")
         elif action == 'receive':
             data = sock.recv(2048)
-            print("handshake recv data: %s" % data.hex())
+            print("handshake recv data: %s len: %d" % (data.hex(), len(data)))
             plaintext = noise.read_message(data)
             print("handshake plaintext: %s" % plaintext.hex())
 

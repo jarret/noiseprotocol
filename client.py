@@ -14,16 +14,17 @@ noise = NoiseConnection.from_name(b'Noise_XK_secp256k1_ChaChaPoly_SHA256')
 print("setting initiator")
 noise.set_as_initiator()
 
-print("our private")
+print("\nour private:")
 our_static = bytes.fromhex(
     "1111111111111111111111111111111111111111111111111111111111111111")
 noise.set_keypair_from_private_bytes(Keypair.STATIC, our_static)
 
+print("\nour ephemeral:")
 our_ephemeral = bytes.fromhex(
     "1212121212121212121212121212121212121212121212121212121212121212")
 noise.set_keypair_from_private_bytes(Keypair.EPHEMERAL, our_ephemeral)
 
-print("their private")
+print("\ntheir private:")
 their_static = bytes.fromhex(
         "2121212121212121212121212121212121212121212121212121212121212121")
 noise.set_keypair_from_private_bytes(Keypair.REMOTE_STATIC, their_static)
@@ -45,7 +46,7 @@ for action in cycle(['send', 'receive']):
         print("done sending")
     elif action == 'receive':
         data = sock.recv(2048)
-        print("handshake recv data: %s" % data.hex())
+        print("handshake recv data: %s len: %d" % (data.hex(), len(data)))
         plaintext = noise.read_message(data)
         print("handshake plaintext: %s" % plaintext.hex())
 

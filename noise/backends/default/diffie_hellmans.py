@@ -59,7 +59,7 @@ class Secp256k1(DH):
 
     @property
     def dhlen(self):
-        return 32
+        return 33
 
     def generate_keypair(self) -> 'KeyPair':
         private_key = secp256k1.PrivateKey()
@@ -74,7 +74,11 @@ class Secp256k1(DH):
         if not isinstance(private_key, secp256k1.PrivateKey) or not isinstance(public_key, secp256k1.PublicKey):
             raise NoiseValueError('Invalid keys! Must be secp256k1.PrivateKey and secp256k1.PublicKey instances')
         private_bytes = private_key.private_key
+        print("dh private bytes: %s len: %d" % (private_bytes.hex(),
+                                                len(private_bytes)))
+        print("dh public bytes: %s len: %d" % (public_key.serialize().hex(),
+                                               len(public_key.serialize())))
         ss_bytes = public_key.ecdh(private_bytes)
-        print("ss_bytes: %s" % ss_bytes.hex())
+        print("ss_bytes: %s len: %d" % (ss_bytes.hex(), len(ss_bytes)))
         return ss_bytes
         #return private_key.exchange(public_key)
